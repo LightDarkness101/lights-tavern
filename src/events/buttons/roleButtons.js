@@ -1,125 +1,42 @@
-const { ChannelType, Colors, EmbedBuilder } = require('discord.js');
-
 module.exports = {
     async execute(interaction, db, ticketType) {
 
+        // Gather data needed from Database.
         await db.collection('guilds').doc(interaction.guild.id).collection("storage").doc("ids").get().then((doc) => {
-            giveaways = interaction.guild.roles.cache.find(x => x.id === doc.data().giveaways);
-            polls = interaction.guild.roles.cache.find(x => x.id === doc.data().polls);
-            notifications = interaction.guild.roles.cache.find(x => x.id === doc.data().notifications);
-            dbd = interaction.guild.roles.cache.find(x => x.id === doc.data().dbd);
-            dnd = interaction.guild.roles.cache.find(x => x.id === doc.data().dnd);
-            plateup = interaction.guild.roles.cache.find(x => x.id === doc.data().plateup);
+            giveaways = doc.data().giveaways;
+            polls = doc.data().polls;
+            notifications = doc.data().notifications;
+            dbd = doc.data().dbd;
+            dnd = doc.data().dnd;
+            plateup = doc.data().plateup;
         });
 
+        // Define basic variables.
         let member = interaction.member;
         let roleID =
-            ticketType === 'giveaways' ? giveaways.id :
-            ticketType === 'polls' ? polls.id :
-            ticketType === 'notifications' ? notifications.id :
-            ticketType === 'dbd' ? dbd.id :
-            ticketType === 'dnd' ? dnd.id :
-            ticketType === 'plateup' ? plateup.id :
+            ticketType === 'giveaways' ? giveaways:
+            ticketType === 'polls' ? polls :
+            ticketType === 'notifications' ? notifications :
+            ticketType === 'dbd' ? dbd :
+            ticketType === 'dnd' ? dnd :
+            ticketType === 'plateup' ? plateup :
             'ticket';
 
-        switch (roleID) {
-            case giveaways.id: {
-                if (member.roles.cache.has(giveaways.id)) {
-                    member.roles.remove(giveaways);
-                    interaction.reply({
-                        content: `You no longer have the ${giveaways} role.`,
-                        ephemeral: true
-                    });
-                } else if (!member.roles.cache.has(giveaways.id)) {
-                    member.roles.add(giveaways);
-                    interaction.reply({
-                        content: `You now have the ${giveaways} role.`,
-                        ephemeral: true
-                    });
-                }
-                break;
-            }
-            case polls.id: {
-                if (member.roles.cache.has(polls.id)) {
-                    member.roles.remove(polls);
-                    interaction.reply({
-                        content: `You no longer have the ${polls} role.`,
-                        ephemeral: true
-                    });
-                } else if (!member.roles.cache.has(polls.id)) {
-                    member.roles.add(polls);
-                    interaction.reply({
-                        content: `You now have the ${polls} role.`,
-                        ephemeral: true
-                    });
-                }
-                break;
-            }
-            case notifications.id: {
-                if (member.roles.cache.has(notifications.id)) {
-                    member.roles.remove(notifications);
-                    interaction.reply({
-                        content: `You no longer have the ${notifications} role.`,
-                        ephemeral: true
-                    });
-                } else if (!member.roles.cache.has(notifications.id)) {
-                    member.roles.add(notifications);
-                    interaction.reply({
-                        content: `You now have the ${notifications} role.`,
-                        ephemeral: true
-                    });
-                }
-                break;
-            }
-            case dbd.id: {
-                if (member.roles.cache.has(dbd.id)) {
-                    member.roles.remove(dbd);
-                    interaction.reply({
-                        content: `You no longer have the ${dbd} role.`,
-                        ephemeral: true
-                    });
-                } else if (!member.roles.cache.has(dbd.id)) {
-                    member.roles.add(dbd);
-                    interaction.reply({
-                        content: `You now have the ${dbd} role.`,
-                        ephemeral: true
-                    });
-                }
-                break;
-            }
-            case dnd.id: {
-                if (member.roles.cache.has(dnd.id)) {
-                    member.roles.remove(dnd);
-                    interaction.reply({
-                        content: `You no longer have the ${dnd} role.`,
-                        ephemeral: true
-                    });
-                } else if (!member.roles.cache.has(dnd.id)) {
-                    member.roles.add(dnd);
-                    interaction.reply({
-                        content: `You now have the ${dnd} role.`,
-                        ephemeral: true
-                    });
-                }
-                break;
-            }
-            case plateup.id: {
-                if (member.roles.cache.has(plateup.id)) {
-                    member.roles.remove(plateup);
-                    interaction.reply({
-                        content: `You no longer have the ${plateup} role.`,
-                        ephemeral: true
-                    });
-                } else if (!member.roles.cache.has(plateup.id)) {
-                    member.roles.add(plateup);
-                    interaction.reply({
-                        content: `You now have the ${plateup} role.`,
-                        ephemeral: true
-                    });
-                }
-                break;
+        if (ticketType === `giveaways` || `polls` || `notifications` || `dbd` || `dnd` || `plateup`) {
+            let role = interaction.guild.roles.cache.find(x => x.id === roleID);
+            if (member.roles.cache.has(roleID)) {
+                member.roles.remove(role);
+                interaction.reply({
+                    content: `You no longer have the ${role} role.`,
+                    ephemeral: true
+                });
+            } else if (!member.roles.cache.has(roleID)) {
+                member.roles.add(role);
+                interaction.reply({
+                    content: `You now have the ${role} role.`,
+                    ephemeral: true
+                });
             }
         }
-
     },
 };
